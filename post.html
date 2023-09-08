@@ -61,7 +61,7 @@
       username.innerText = post.username;
 
       const date = document.createElement('span');
-      date.innerText = post.created_at;
+      date.innerText = post.created_at.toGMTString();
 
       const padding = document.createElement('span');
       padding.innerText = ' ';
