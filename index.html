@@ -119,7 +119,7 @@
       console.log(data, error);
 
       const posts = document.getElementById('posts');
-      data.forEach((post) => {
+      data.reverse().forEach((post) => {
         addPost(post);
       });
 
