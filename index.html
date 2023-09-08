@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+
+<body>
+  <main class="container">
+    <nav>
+      <ul>
+        <li><strong>teyvat.wiki</strong></li>
+      </ul>
+      <ul>
+        <li><a href="index">Home</a></li>
+        <!-- <li><a href="#">Link</a></li> -->
+        <!-- <li><a href="#" role="button">Button</a></li> -->
+      </ul>
+    </nav>
+
+    <article>
+      <form>
+        <h2>Post a message</h2>
+        <input type="text" id="title" name="title" placeholder="Title" required>
+        <textarea id="content" name="content" placeholder="Content" required></textarea>
+        <div class="grid">
+          <input type="text" id="username" name="username" placeholder="Username" required>
+          <button type="submit">Post</button>
+        </div>
+      </form>
+    </article>
+
+    <div id="posts">
+      <!-- <article>
+        <header>I love this game sm..</header>
+
+        <body>
+          <p>It's so fun and I love the characters!</p>
+          <img src="https://www.partitionwizard.com/images/uploads/articles/2022/06/genshin-impact-screenshot-folder/genshin-impact-screenshot-folder-1.jpg">
+        </body>
+        <footer>Posted by <a href="">a</a> on {date}</footer>
+      </article> -->
+    </div>
+  </main>
+
+  <script>
+    async function addPost(post)
+    {
+      const posts = document.getElementById('posts');
+
+      const article = document.createElement('article');
+      const header = document.createElement('header');
+      const body = document.createElement('body');
+      const footer = document.createElement('footer');
+
+      const title = document.createElement('a');
+      title.href = 'post.html?id=' + post.id;
+      title.innerText = post.title;
+
+      const content = document.createElement('p');
+      content.innerText = post.content;
+
+      const image = document.createElement('img');
+      image.src = post.image;
+
+      const username = document.createElement('a');
+      username.href = 'user.html?username=' + post.username;
+      username.innerText = post.username;
+
+      const date = document.createElement('span');
+      date.innerText = post.created_at;
+
+      const padding = document.createElement('span');
+      padding.innerText = ' ';
+
+      header.appendChild(title);
+      body.appendChild(content);
+      if (post.image)
+        body.appendChild(image);
+      footer.appendChild(username);
+      footer.appendChild(padding);
+      footer.appendChild(date);
+
+      article.appendChild(header);
+      article.appendChild(body);
+      article.appendChild(footer);
+
+      posts.prepend(article);
+    }
+
+    (async () => {
+      // Create a single supabase client for interacting with your database
+      const client = supabase.createClient('https://amdluvqcdimkshdylmlq.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFtZGx1dnFjZGlta3NoZHlsbWxxIiwicm9sZSI6ImFub24iLCJpYXQiOjE2OTQxOTc2NDYsImV4cCI6MjAwOTc3MzY0Nn0.3HPOax1dvWfHRioKT7s42R-YQL6X_gpDBgjTPL0D758');
+
+      // Listen to all changes in the database
+      const Posts = client.channel('custom-all-channel')
+        .on(
+          'postgres_changes',
+          { event: '*', schema: 'public', table: 'Posts' },
+          (payload) => {
+            console.log('Change received!', payload);
+            addPost(payload.new);
+          }
+        )
+        .subscribe();
+
+      // Current posts
+      const { data, error } = await client
+        .from('Posts')
+        .select('*')
+        .order('id', { ascending: false })
+        .limit(10);
+
+      console.log(data, error);
+
+      const posts = document.getElementById('posts');
+      data.forEach((post) => {
+        addPost(post);
+      });
+
+      // Form submit
+      const form = document.querySelector('form');
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const title = document.getElementById('title').value;
+        const content = document.getElementById('content').value;
+        const username = document.getElementById('username').value;
+
+        const { data, error } = await client
+          .from('Posts')
+          .insert([
+            { title, content, username },
+          ]);
+
+        console.log(data, error);
+
+        document.getElementById('title').value = '';
+        document.getElementById('content').value = '';
+        document.getElementById('username').value = '';
+      });
+    })();
+  </script>
+</body>
+
+</html>

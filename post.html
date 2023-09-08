@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Post</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+
+<body>
+  <main class="container">
+    <nav>
+      <ul>
+        <li><strong>teyvat.wiki</strong></li>
+      </ul>
+      <ul>
+        <li><a href="index">Home</a></li>
+        <!-- <li><a href="#">Link</a></li> -->
+        <!-- <li><a href="#" role="button">Button</a></li> -->
+      </ul>
+    </nav>
+  </main>
+
+  <script>
+    (async () => {
+      // Create a single supabase client for interacting with your database
+      const client = supabase.createClient('https://amdluvqcdimkshdylmlq.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFtZGx1dnFjZGlta3NoZHlsbWxxIiwicm9sZSI6ImFub24iLCJpYXQiOjE2OTQxOTc2NDYsImV4cCI6MjAwOTc3MzY0Nn0.3HPOax1dvWfHRioKT7s42R-YQL6X_gpDBgjTPL0D758');
+
+      // Get the id from the url
+      const urlParams = new URLSearchParams(window.location.search);
+      const id = urlParams.get('id');
+
+      // Get the post from the database
+      const { data, error } = await client
+        .from('Posts')
+        .select('*')
+        .eq('id', id)
+        .single();
+
+      // Create the post element
+      const post = data;
+      const article = document.createElement('article');
+      const header = document.createElement('header');
+      const body = document.createElement('body');
+      const footer = document.createElement('footer');
+
+      const title = document.createElement('a');
+      title.href = 'post.html?id=' + post.id;
+      title.innerText = post.title;
+
+      const content = document.createElement('p');
+      content.innerText = post.content;
+
+      const image = document.createElement('img');
+      image.src = post.image;
+
+      const username = document.createElement('a');
+      username.href = 'user.html?username=' + post.username;
+      username.innerText = post.username;
+
+      const date = document.createElement('span');
+      date.innerText = post.created_at;
+
+      const padding = document.createElement('span');
+      padding.innerText = ' ';
+
+      header.appendChild(title);
+      body.appendChild(content);
+      if (post.image)
+        body.appendChild(image);
+      footer.appendChild(username);
+      footer.appendChild(padding);
+      footer.appendChild(date);
+
+      article.appendChild(header);
+      article.appendChild(body);
+      article.appendChild(footer);
+
+      // Add the post to the page
+      const main = document.querySelector('main');
+      main.appendChild(article);
+    })();
+  </script>
+</body>
+
+</html>
