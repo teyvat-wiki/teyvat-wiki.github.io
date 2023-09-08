@@ -16,7 +16,7 @@
         <li><strong>teyvat.wiki</strong></li>
       </ul>
       <ul>
-        <li><a href="index">Home</a></li>
+        <li><a href="/">Home</a></li>
         <!-- <li><a href="#">Link</a></li> -->
         <!-- <li><a href="#" role="button">Button</a></li> -->
       </ul>
@@ -47,7 +47,7 @@
       const footer = document.createElement('footer');
 
       const title = document.createElement('a');
-      title.href = 'post.html?id=' + post.id;
+      title.href = '/post?id=' + post.id;
       title.innerText = post.title;
 
       const content = document.createElement('p');
@@ -57,7 +57,7 @@
       image.src = post.image;
 
       const username = document.createElement('a');
-      username.href = 'user.html?username=' + post.username;
+      username.href = '/user?username=' + post.username;
       username.innerText = post.username;
 
       const date = document.createElement('span');

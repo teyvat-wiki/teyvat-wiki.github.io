@@ -16,7 +16,7 @@
         <li><strong>teyvat.wiki</strong></li>
       </ul>
       <ul>
-        <li><a href="index">Home</a></li>
+        <li><a href="/">Home</a></li>
         <!-- <li><a href="#">Link</a></li> -->
         <!-- <li><a href="#" role="button">Button</a></li> -->
       </ul>
@@ -27,6 +27,7 @@
         <h2>Post a message</h2>
         <input type="text" id="title" name="title" placeholder="Title" required>
         <textarea id="content" name="content" placeholder="Content" required></textarea>
+        <!-- <input type="file" id="image" name="image" accept="image/*"> -->
         <div class="grid">
           <input type="text" id="username" name="username" placeholder="Username" required>
           <button type="submit">Post</button>
@@ -58,7 +59,7 @@
       const footer = document.createElement('footer');
 
       const title = document.createElement('a');
-      title.href = 'post.html?id=' + post.id;
+      title.href = '/post?id=' + post.id;
       title.innerText = post.title;
 
       const content = document.createElement('p');
@@ -68,7 +69,7 @@
       image.src = post.image;
 
       const username = document.createElement('a');
-      username.href = 'user.html?username=' + post.username;
+      username.href = '/user?username=' + post.username;
       username.innerText = post.username;
 
       const date = document.createElement('span');
